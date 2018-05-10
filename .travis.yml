@@ -1,0 +1,8 @@
+sudo: required
+before_install:
+  - sudo apt-get install libncurses5-dev libncursesw5-dev
+language: c
+compiler:
+  - gcc
+script:
+  - make

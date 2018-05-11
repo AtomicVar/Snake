@@ -49,7 +49,8 @@ void updateSnake(WINDOW *win, Snake S, enum DIREC d, bool grow, Apple A);
 bool notDied(WINDOW *win, Snake S);
 Apple newApple(WINDOW *win);
 bool eatApple(WINDOW *win, Snake S, Apple A, enum DIREC d);
-int toEven(int n);
+int toOdd(int n);
+void printScore(int Y, int X, int *score);
 
 int main()
 {
@@ -101,9 +102,20 @@ void pwelcome()
 
 void game()
 {
-    int areaH = 20, areaW = 40;
+    int winH, winW;
+    int areaH = 20, areaW = 38;
+    int scoreX, scoreY;
+    int score = 0;
+
+    getmaxyx(stdscr, winH, winW);
+    scoreX = winW * 4 / 5;
+    scoreY = winH * 4 / 5;
+    
     WINDOW *area = newwin(areaH, areaW, (LINES - areaH) / 2, (COLS - areaW) / 2 - 15);
-    box(area, 0, 0);
+    init_pair(3, COLOR_BLACK, COLOR_BLUE);
+    wattron(area, COLOR_PAIR(3));
+    box(area, ' ', ' ');
+    wattroff(area, COLOR_PAIR(3));
     refresh();
     wrefresh(area);
 
@@ -111,6 +123,8 @@ void game()
 
     drawSnake(area, S);
     Apple A = newApple(area);
+
+    printScore(scoreY, scoreX, &score);
 
     enum DIREC d = RIGHT;
     while (notDied(area, S))
@@ -137,6 +151,7 @@ void game()
         }
         if (eatApple(area, S, A, d)){
             updateSnake(area, S, d, true, A);
+            printScore(scoreY, scoreX, &score);
             A = newApple(area);
         }
         else
@@ -259,8 +274,8 @@ Apple newApple(WINDOW *win)
 
     getmaxyx(win, row, col);
     srand(time(NULL));
-    A->x = 2 + toEven(rand() % (col - 4));
-    A->y = 2 + toEven(rand() % (row - 4));
+    A->x = 2 + toOdd(rand() % (col - 4));
+    A->y = 2 + toOdd(rand() % (row - 4));
 
     init_pair(2, COLOR_GREEN, COLOR_RED);
 
@@ -300,8 +315,14 @@ bool eatApple(WINDOW *win, Snake S, Apple A, enum DIREC d)
         return false;
 }
 
-int toEven(int n){
-    if (n % 2 != 0)
+int toOdd(int n){
+    if (n % 2 == 0)
         n++;
     return n;
+}
+
+void printScore(int Y, int X, int *score){
+    attron(A_BOLD | A_UNDERLINE);
+    mvprintw(Y, X, "Score: %d", (*score)++);
+    attroff(A_BOLD | A_UNDERLINE);
 }

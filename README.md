@@ -21,4 +21,4 @@ A Windows port screenshot by Cygwin below:
 
 ☑ Windows (It can be compiled on Cygwin.)
 
-🞬 macOS (Hope that someone can test it for me. I don't own an Apple computer ;-)
+☑ macOS (Tested by [@Yeeef](https://github.com/Yeeef))
